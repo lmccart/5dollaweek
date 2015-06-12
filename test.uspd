@@ -1,0 +1,115 @@
+<document version="6" os="macosx" original_document_path="/Users/lmccart/Documents/eo/test.uspd">
+	<vam_state master_audio_shown="1010" master_audio_monitor="0" preview_audio_monitor="0" transition_0_unique_id="-- CUT --" transition_1_unique_id="-- SMOOTH --" transition_2_unique_id="side" />
+	<transition_data />
+	<chroma_key_data />
+	<advanced_output>
+		<output_list>
+			<output output_enabled="1" output_type="2" output_transport="7" output_url="rtmp://sjc-uhs07.ustream.tv/ustreamVideo/12970116" output_location="broadcaster/live309" output_branding="ustream" flash_user_agent="WirecastUSTREAM/6.0.4" rtmp_connection_param_type="broadcaster" rtmp_connection_param_application="broadcaster" rtmp_connection_param_streamNamePrefix="309" rtmp_connection_param_sessionId="8d45c494cc321adca9f3b91e35d48fa7" rtmp_startPublishCommand="startPublish" rtmp_stopPublishCommand="stopPublish" rtmp_publishCommandParameter="" rtmp_never_authenticates="1" output_username="laurmccarthy@gmail.com" output_password="ustream0408" output_presetname="1080p 16:9 (1920x1080) 4050 kbps" selected_channel_code="12970116" output_display_name="lmccart" output_display_group_name="Ustream" output_settings_complete="1" fms_callback_observerID="797" fms_callback_whatID="1970488130" unique_id="1" output_guid="57DED26B-DD5F-4983-8B54-1388BDD06822">
+				<ustream_session sessionId="8d45c494cc321adca9f3b91e35d48fa7" userId="20268958" success="true">
+					<channels>
+						<xml_tag title="lmccart" channelCode="12970116">
+							<popups socialstream="http://www.ustream.tv/socialstream/popup/12970116" chat="http://www.ustream.tv/channel-room/12970116" />
+						</xml_tag>
+					</channels>
+					<sharingCapabilities>
+						<videoUpload>
+							<youtube enabled="false" activationUrl="http://www.ustream.tv/myyoutube?sid=%s" />
+						</videoUpload>
+						<statusUpdate>
+							<twitter enabled="false" activationUrl="http://www.ustream.tv/myapis?sid=%s" />
+							<facebook enabled="false" activationUrl="http://www.ustream.tv/myfacebook?sid=%s" />
+						</statusUpdate>
+					</sharingCapabilities>
+					<server_list>
+						<KeyValuePairs>
+							<KeyValuePair KeyName="12970116" KeyValue="rtmp://sjc-uhs07.ustream.tv/ustreamVideo/12970116" />
+						</KeyValuePairs>
+					</server_list>
+				</ustream_session>
+			</output>
+			<output output_presetname="1080p 16:9 (1920x1080) 4050 kbps" output_type="1" output_enabled="1" output_branding="ustream" output_display_name="Record To Disk - MP4" output_display_group_name="Record To Disk" output_autoinfilename="1" output_url="/Users/lmccart/Desktop/MyMovie.mp4" output_settings_complete="1" unique_id="2" output_guid="3F266F31-2831-471E-AE0B-E93C337A18E6" />
+		</output_list>
+	</advanced_output>
+	<output_presets>
+		<preset output_presetname="1080p 16:9 (1920x1080) 4050 kbps">
+			<movie format="Flash" output_system="">
+				<track mo_width="1920" mo_height="1080" type="1986618479" colourspace="846624121" mo_enabled="1" codecname="x264" fps="30" compressed="1" timescale="3000" target_bit_rate="4050" profile="1751738216" limit_bit_rate="0" key_frame_rate="60" timecode_interval="30" timecode_on="0" FlashVideoDisableH264BFrames="0" codec_quality="" x264_gpu_on="0" x264_commandline="" absolute_time_stamps="0" key_frame_aligned="0" strict_cbr="0" main_concept="1" />
+				<track type="1635083375" bps="16" channels="2" samplerate="44100" mo_enabled="1" codecname="MPEG-4 Audio" target_bit_rate="192" timescale="44100" />
+			</movie>
+		</preset>
+	</output_presets>
+	<volume value="1" />
+	<preview_volume value="1" />
+	<auto_live />
+	<flip_flop />
+	<output_annotations />
+	<transition_duration />
+	<visual_style />
+	<single_output />
+	<media_directories />
+	<layer_names />
+	<layer_scales layer_0="0.1" layer_1="0.1" layer_3="0.1" layer_4="0.1" />
+	<layer_visible layer_3="0" layer_4="0" layer_0="0" layer_1="0" />
+	<sections>
+		<ustream_prefs>
+			<recording recordToUstream="1" />
+		</ustream_prefs>
+	</sections>
+	<aspectRatio custom_width="1080" custom_height="1920" type="1129665364" />
+	<shot_key_map />
+	<shotsLiveWhenSaved>
+		<xml_tag vaLayerIndex="2" beLayerEnum="3" vaLayerEnum="1836282930" unique_id="B2825808-73C7-464A-8AB2-905545405D48_shot" />
+	</shotsLiveWhenSaved>
+	<source_sdk_settings>
+		<xml_tag SOURCE_SDK_ID_DOC="Local Desktop Presenter~Local Desktop Presenter 0">
+			<settings unique_id="1" output_guid="54E81840-86AE-467F-A60E-6CDBEADAAC25">
+				<parameter name="Type" value="0" />
+				<parameter name="cursor" value="true" />
+				<parameter name="capture_audio" value="false" />
+				<parameter name="inactive" value="false" />
+				<parameter name="capture_window" value="0" />
+				<parameter name="capture_game" value="false" />
+				<parameter name="capture_monitor" value="1" />
+				<parameter name="capture_monitor_region" value="0,0,-1,-1" />
+				<parameter name="capture_monitor_state" value="0" />
+			</settings>
+		</xml_tag>
+	</source_sdk_settings>
+	<social_media />
+	<assets>
+		<asset name="Blank Shot" unique_id="58DAA2D6-25F1-49B8-81CC-B97802811631_shot" type="shot" media-type="9" vam_state="1" created_for_layer="5" blank_shot="1" />
+		<asset name="Blank Shot" unique_id="39CDD4C3-7322-431C-8C9A-718259834D9C_shot" type="shot" media-type="9" vam_state="1" created_for_layer="1" blank_shot="1" />
+		<asset name="Blank Shot" unique_id="E819E942-6069-4F53-B8FD-208DFD408FA2_shot" type="shot" media-type="9" vam_state="1" created_for_layer="2" blank_shot="1" />
+		<asset name="Blank Shot" unique_id="B9D894AA-64E6-4E86-B857-74C7A95E1018_shot" type="shot" media-type="9" vam_state="1" created_for_layer="3" blank_shot="1" />
+		<asset name="Blank Shot" unique_id="49633AB9-F7AE-4DD3-B7EB-D78351D3965C_shot" type="shot" media-type="9" vam_state="1" created_for_layer="4" blank_shot="1" />
+		<asset media-type="2" type="vaSourcesManager" url="vaSourcesManager::URL" unique_id="System Devices~FaceTime HD Camera Video" name="FaceTime HD Camera Video" video_tracks="1" audio_tracks="0" sourceGUID="9AC79B70-8BCA-48E2-8266-0E9416AC9B7E" square_pixel_height="240" square_pixel_width="320" />
+		<asset media-type="3" type="vaSourcesManager" url="vaSourcesManager::URL" unique_id="System Devices~Built-in Microphone Audio" name="Built-in Microphone Audio" video_tracks="0" audio_tracks="1" sourceGUID="9AC79B70-8BCA-48E2-8266-0E9416AC9B7E" />
+		<asset media-type="4" type="vaSourcesManager" url="vaSourcesManager::URL" unique_id="Local Desktop Presenter~Local Desktop Presenter 0" name="Local Desktop Presenter 0" video_tracks="1" audio_tracks="1" sourceGUID="5F8BCC95-7F8A-4FD3-AA0C-59C0A1F20D4C" square_pixel_width="1080" square_pixel_height="1920" />
+		<asset name="Local Desktop Presenter 0" unique_id="B2825808-73C7-464A-8AB2-905545405D48_shot" type="shot" media-type="9" vam_state="14" alpha_track_count="0" veil_track_count="0" video_tracks="2" still_image_tracks="0" audio_tracks="1" created_for_layer="2" />
+	</assets>
+	<chroma_key_configurations>
+		<chroma_key_configuration unique_id="System Devices~FaceTime HD Camera Video" chroma_config_id="2285" />
+		<chroma_key_configuration unique_id="System Devices~Built-in Microphone Audio" chroma_config_id="2288" />
+		<chroma_key_configuration unique_id="Local Desktop Presenter~Local Desktop Presenter 0" chroma_config_id="3126" />
+	</chroma_key_configurations>
+	<shots>
+		<shot event_type="2" unique_id="58DAA2D6-25F1-49B8-81CC-B97802811631_shot" />
+		<shot event_type="2" unique_id="39CDD4C3-7322-431C-8C9A-718259834D9C_shot" />
+		<shot event_type="2" unique_id="E819E942-6069-4F53-B8FD-208DFD408FA2_shot" />
+		<shot event_type="2" unique_id="B9D894AA-64E6-4E86-B857-74C7A95E1018_shot" />
+		<shot event_type="2" unique_id="49633AB9-F7AE-4DD3-B7EB-D78351D3965C_shot" />
+		<shot event_type="2" template_uuid="91550E48-A580-46FB-B949-CBF8494344FA" virtualsetzoom="0" unique_id="B2825808-73C7-464A-8AB2-905545405D48_shot">
+			<event event_type="4" zorder="5" unique_id="one_quad" template_tag="1">
+				<event event_type="2" channel_id="1" ro_respect_aspect_ratio="1" unique_id="Local Desktop Presenter~Local Desktop Presenter 0">
+					<event event_type="1" channel_id="1" ro_media_type="1635083375" default_action="2" play_flags="6" play_speed="1" ro_playhead="0" />
+					<event event_type="1" channel_id="1" ro_media_type="1986618479" default_action="2" play_flags="6" play_speed="1" ro_playhead="0" />
+				</event>
+			</event>
+			<event event_type="4" zorder="10" unique_id="one_quad">
+				<event event_type="2" channel_id="1" ro_respect_aspect_ratio="1" obj_scale="0.178966,0.100668" ro_user_scale="0.238621,0.238621" obj_crop_rect="40,0,40,0" obj_pos="-2.82699,-2.11862" unique_id="System Devices~FaceTime HD Camera Video">
+					<event event_type="1" channel_id="1" ro_media_type="1986618479" />
+				</event>
+			</event>
+		</shot>
+	</shots>
+</document>
