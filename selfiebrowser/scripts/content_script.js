@@ -14,7 +14,7 @@ $("document").ready(function(){
 
   $(video).css('width', '240px');
   $(video).css('height', '180px');
-  $(video).css('margin-top', '-15px');
+  $(video).css('margin-top', '0px');
   $(video).css('margin-left', '-45px');
   
   $(video_container).css('position', 'fixed');

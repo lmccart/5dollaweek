@@ -1,22 +1,62 @@
-
-<!DOCTYPE html>
 <html>
   <head>
-  <style>
-    body { 
-      margin: 0;
-      padding: 0;
-    }
-    #player {
-      width: 1080px;
-      height: 1920px;
-    }
-  </style>
-  </head>
+  <!-- https://developers.google.com/youtube/player_parameters -->
+    <style>
+      body { 
+        margin: 0;
+        padding: 0;
+        zoom: 1.333;
+        background: rgb(0, 216, 255);
+      }
+      #ytplayer {
+        display: none;
+      }
+    </style>
   <body>
-    <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
-    <iframe id='player' width="1080" height="1920" src="https://www.youtube.com/embed/Luf_WhTJfiU?list=PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2&amp;controls=1&amp;showinfo=0&amp;autoplay=1&amp;enablejsapi=1&amp;loop=1" frameborder="0" allowfullscreen></iframe>
-  </body>
+
+  <div id="ytplayer"></div>
+  <script src="https://www.youtube.com/player_api"></script>
   <script>
+
+  function onYouTubeIframeAPIReady() {
+
+    var div;
+    var player = new YT.Player('ytplayer', {
+      height: 1920,
+      width: 1080,
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        disablekb: 0,
+        enablejsapi: 1,
+        fs: 0,
+        modestbranding: 1,
+        origin: 'localhost',
+        rel: 0,
+        showinfo: 0,
+        list: 'PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2',
+        listType: 'playlist',
+        loop: 1,
+        start: 0,
+        suggestedQuality: 'hires'
+      },
+      events: {
+        'onReady': function () {
+          player.playVideo();
+        },
+        'onStateChange': function (e) {
+          // vid is hidden until playing to eliminate youtube ui
+          if (e.data === 1) {
+            if (!div) {
+              div = document.getElementById('ytplayer');
+            }
+            div.style.display = 'block';
+          }
+        }
+      }
+    });
+  }
   </script>
+
+  </body>
 </html>
