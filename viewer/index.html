@@ -4,13 +4,21 @@
     <script src="https://www.youtube.com/player_api"></script>
     <script>
       var vids = [];
-      var ind = 3;
+      var ind = -1;
 
-      $.getJSON('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2&key=AIzaSyAfgBwj-gsnyKWTYVD2fNJZVH8gZpBBig0', function(res) {
-          for (var i=0; i<res.items.length; i++) {
-            vids.push(res.items[i].snippet.resourceId.videoId);
-          }
-      });
+      function loadPlaylist(cb) {
+        vids = [];
+        $.getJSON('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2&key=AIzaSyAfgBwj-gsnyKWTYVD2fNJZVH8gZpBBig0', function(res) {
+            for (var i=0; i<res.items.length; i++) {
+              vids.push(res.items[i].snippet.resourceId.videoId);
+            }
+            console.log(vids);
+            if (ind === -1) {
+              ind = Math.floor(Math.random()*vids.length);
+            }
+            cb();
+        });
+      }
     </script>
  
 
@@ -91,16 +99,7 @@
       player.playVideo();
     }
 
-    function loadPlaylist(cb) {
-      vids = [];
-      $.getJSON('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2&key=AIzaSyAfgBwj-gsnyKWTYVD2fNJZVH8gZpBBig0', function(res) {
-          for (var i=0; i<res.items.length; i++) {
-            vids.push(res.items[i].snippet.resourceId.videoId);
-          }
-          console.log(vids);
-          cb();
-      });
-    }
+
   }
   </script>
   
