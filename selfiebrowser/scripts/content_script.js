@@ -12,10 +12,10 @@ $("document").ready(function(){
   $(video_container).append(video);
   $('body').append(video_container);
 
-  $(video).css('width', '240px');
-  $(video).css('height', '180px');
-  $(video).css('margin-top', '0px');
-  $(video).css('margin-left', '-45px');
+  $(video).css('width', '288px');
+  $(video).css('height', '216px');
+  $(video).css('margin-top', '-23px');
+  $(video).css('margin-left', '-69px');
   
   $(video_container).css('position', 'fixed');
   $(video_container).css('bottom', '20px');
@@ -26,11 +26,29 @@ $("document").ready(function(){
   $(video_container).css('overflow', 'hidden');
   $(video_container).css('z-index', '4');
 
-  navigator.getUserMedia({audio: false, video: true}, function(stream) {
-    video.src = window.URL.createObjectURL(stream);
-    video.play();
-  }, function(error) {
-    console.log(error);
-  });
+  MediaStreamTrack.getSources(function(sourceInfos) {
+    var audioSource = null;
+    var videoSource = null;
 
+    for (var i = 0; i != sourceInfos.length; ++i) {
+      var sourceInfo = sourceInfos[i];
+      if (sourceInfo.kind === 'video') {
+        console.log(sourceInfo.id, sourceInfo.label || 'camera');
+        if (sourceInfo.label.indexOf('Webcam') !== -1) {
+          videoSource = sourceInfo.id;
+        }
+      }
+    }
+
+    navigator.getUserMedia({audio: false, video: {
+        optional: [{sourceId: videoSource}]
+      }}, function(stream) {
+      video.src = window.URL.createObjectURL(stream);
+      video.play();
+    }, function(error) {
+      console.log(error);
+    });
+
+
+  });
 });
