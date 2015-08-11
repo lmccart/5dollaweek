@@ -1,0 +1,135 @@
+<html>
+  <head>
+    <script src='//code.jquery.com/jquery-2.1.4.min.js'></script>
+    <script src="https://www.youtube.com/player_api"></script>
+    <script>
+      var vids = [];
+      var ind = -1;
+
+      function loadPlaylist(cb) {
+        vids = [];
+        $.getJSON('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2&key=AIzaSyAfgBwj-gsnyKWTYVD2fNJZVH8gZpBBig0', function(res) {
+            for (var i=0; i<res.items.length; i++) {
+              vids.push(res.items[i].snippet.resourceId.videoId);
+            }
+            if (ind === -1) {
+              ind = Math.floor(Math.random()*vids.length);
+            }
+            if (cb) cb();
+        });
+      }
+    </script>
+ 
+
+    <style>
+      body { 
+        margin: 0;
+        padding: 0;
+        background: rgb(0, 216, 255);
+        font-family: Helvetica, Arial, sans-serif
+      }
+      #ytplayer {
+        display: none;
+        margin: 0 auto;
+      }
+      #status, #zoom {
+        position: fixed;
+        font-size: 15px;
+        top: 10px;
+        left: 90px;
+        padding: 3px 6px 5px 6px;
+      }
+      #zoom {
+        left: 10px;
+        display: none;
+        cursor: pointer;
+        background: black;
+        color: white;
+      }
+
+    </style>
+  </head>
+  <body>
+  <div id='status'></div>
+  <div id='zoom'>zoom out</div>
+  <div id='ytplayer'></div>
+  <script src='https://www.youtube.com/player_api'></script>
+  <script>
+
+  var aspect = 1920/1080;
+
+  $('#zoom').click(function() {
+    if ($(this).text() === 'zoom in') {
+      $(this).text('zoom out');
+      var w = window.innerWidth;
+      $('#ytplayer').attr('width', w);
+      $('#ytplayer').attr('height', w*aspect);
+    } else {
+      $(this).text('zoom in');
+      var h = window.innerHeight;
+      $('#ytplayer').attr('width', h/aspect);
+      $('#ytplayer').attr('height', h);
+    }
+  });
+
+  function onYouTubeIframeAPIReady() {
+
+    var player = new YT.Player('ytplayer', {
+      width: window.innerWidth,
+      height: window.innerWidth*aspect,
+      playerVars: {
+        autoplay: 1,
+        controls: 0,
+        disablekb: 0,
+        enablejsapi: 1,
+        fs: 0,
+        modestbranding: 1,
+        origin: 'localhost',
+        rel: 0,
+        showinfo: 0,
+        loop: 1,
+        start: 0//,
+        //suggestedQuality: 'hd1080'
+      },
+      events: {
+        'onReady': function (e) {
+          loadPlaylist(playNext);
+        },
+        'onStateChange': function (e) {
+          // vid is hidden until playing to eliminate youtube ui
+          if (e.data === YT.PlayerState.PLAYING) {
+            $('#ytplayer').css('display', 'block');
+            $('#zoom').css('display', 'block');
+          } else if (e.data === YT.PlayerState.ENDED) {
+            ind = ind + 1;
+            if (ind > vids.length - 1) {
+              // start over
+              loadPlaylist(playNext);
+            }
+            playNext();
+          }
+        },
+        'onError': function(e) {
+          $('#status').html(e);
+          console.log(e);
+          location.reload(); 
+        },
+        'onPlaybackQualityChange': function(e) {
+          var playbackQuality = e.target.getPlaybackQuality();
+          var suggestedQuality = 'hd1080';
+          // $('#status').html('Quality changed to: ' + playbackQuality);
+        }
+      }
+    });
+    
+    function playNext() {
+      player.loadVideoById(vids[ind], 0, 'hd1080');
+      player.playVideo();
+    }
+
+
+  }
+  </script>
+  
+  </body>
+</html>

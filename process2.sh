@@ -1,4 +1,3 @@
-ffmpeg -i $1 -c:v libx264 -r 30 -strict experimental -preset fast $1.1920p30.mov
 /usr/local/bin/youtube-upload \
   --client-secrets=/Users/lmccart/Documents/eo/api_credentials.json \
   --privacy=public \

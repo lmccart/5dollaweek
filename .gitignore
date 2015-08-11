@@ -1,0 +1,11 @@
+server/.env
+api_credentials.json
+*.mov
+*.csv
+recordings/*
+recordings2/*
+.DS_Store
+*/.DS_Store
+test_links/*
+old/*
+*.pkg
