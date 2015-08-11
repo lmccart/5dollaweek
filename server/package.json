@@ -4,5 +4,11 @@
   "description": "",
   "scripts": {
     "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "moment": "^2.10.6",
+    "moment-timezone": "^0.4.0",
+    "mongodb": "^2.0.40"
   }
 }
