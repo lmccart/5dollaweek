@@ -1,0 +1,145 @@
+<html>
+  <head>
+    <script src="//use.typekit.net/rfz2ybg.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script src="https://f.vimeocdn.com/js/froogaloop2.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="jquery.vimeo.js"></script>
+    <style>
+      body { 
+        margin: 0;
+        padding: 0;
+        background: rgb(0, 216, 255);
+        font-size: 1em;
+        font-family: "camingodos-web", Helvetica, Arial, sans-serif
+      }
+      #player1 {
+        opacity: 0;
+        display: block;
+        margin: 0 auto;
+      }
+      .button {
+        position: fixed;
+        top: 8px;
+        padding: 5px;
+        cursor: pointer;
+        color: white;
+        background: rgb(0, 216, 255);
+        z-index: 3;
+        width: 16px;
+        display: none;
+      }
+
+      #zoom {
+        left: 8px;
+      }
+
+      #q {
+        left: 39px;
+      }
+
+      .fullscreen {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+      }
+
+      #status {
+        width: 400px;
+        margin: 200px auto;
+        text-align: center;
+        color: white;
+        z-index: -1;
+      }
+
+      #frame {
+        z-index: 2;
+      }
+
+    </style>
+
+  </head>
+  <body>
+    <script>
+    $(document).ready(function($) {
+
+      function start() {
+        console.log('start');
+
+        var iframe = $('#player1')[0];
+        var player = $f(iframe);
+        player.addEvent('ready', function() {
+
+          player.api('seekTo', 290);
+          player.api('play');
+          
+          player.addEvent('pause', function() {
+            player.api('play');
+          });
+
+          player.addEvent('finish', function() {
+            $('#player1').fadeTo(100, 0);
+            $('#status').html('One moment please.');
+            $('#status').fadeIn();
+            updateLive();
+          });
+        });
+      }
+
+      updateLive(start);
+
+      // sizing stuff
+      var aspect = 1920/1080;
+      zoom(false);
+
+      $('#zoom').click(function() {
+        var dir = ($(this).attr('src') === 'zoomin.png');
+        zoom(dir);
+      });
+
+      function zoom(dir) {
+        if (dir) {
+          $('#zoom').attr('src', 'zoomout.png');
+          var w = window.innerWidth;
+          $('#player1').attr('width', w);
+          $('#player1').attr('height', w*aspect);
+        } else {
+          $('#zoom').attr('src', 'zoomin.png');
+          var h = window.innerHeight;
+          $('#player1').attr('width', h/aspect);
+          $('#player1').attr('height', h);
+        }
+      }
+    });
+
+    function updateLive(cb) {
+      $.getJSON('/get_current', function(res) {
+        if (res.uri) {
+          $('.button').fadeIn();
+          $('#status').delay(3500).fadeOut();
+          var v = res.uri.replace('videos', 'video');
+          var s = 'https://player.vimeo.com'+v+'?api=1&controls=0&player_id=player1';
+          $('#player1').attr('src', s);
+          $('#player1').delay(4000).fadeTo(350, 1.0);
+        } else {
+          console.log('end');
+          $('.button').fadeOut();
+          $('#status').fadeIn();
+          $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 9am-7:30pm.');
+          $('#player1').css('opacity', 0);
+        }
+        if (cb) cb();
+      });
+    }
+    </script>
+   
+    <div class='fullscreen'><div id='status'>One moment please.</div></div>
+    <img class='button' id='zoom' src='zoomout.png' />
+    <img class='button' id='q' src='question.png' />
+    <div id='frame' class='fullscreen'></div>
+    <iframe id="player1" src="https://player.vimeo.com/video/136005785?api=1&controls=0&player_id=player1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+
+  </body>
+</html>
