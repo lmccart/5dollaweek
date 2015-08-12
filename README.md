@@ -10,5 +10,5 @@
   ```
   /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --use-fake-ui-for-media-stream &
   ```
-
+3. Open http://lauren-mccarthy.com/test/blank.html.
 
