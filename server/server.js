@@ -94,7 +94,7 @@ app.get('/get_delete_list', function(req, res) {
 
 
 function start() {
-  end_time = moment(month+next_time.get('date')+end_time_str);
+  updateEndInsertTime();
   updateCurrent();
   cronJob.start();
 }
@@ -151,11 +151,20 @@ function sendCurrent(res) {
   }
 }
 
+function updateEndInsertTime() {
+  if (next_time.get('date') === 25) { // last day go as long as needed
+    end_time = moment(month+next_time.get('date')+end_time_str).add(5, 'hours');
+  } else {
+    end_time = moment(month+next_time.get('date')+end_time_str);
+  }
+  console.log('end time is '+end_time.format());
+}
+
 function updateInsertTime() {  
   next_time = next_time.add(5, 'm');
   if (!next_time.isBefore(end_time)) {
     next_time = moment(month+(next_time.get('date')+1)+start_time_str);
-    end_time = moment(month+next_time.get('date')+end_time_str);
+    updateEndInsertTime();
   }
 
   sessions.update({meta:true}, {$set: {next_time:next_time.format()}}, function(err, res) {
