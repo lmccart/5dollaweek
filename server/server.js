@@ -14,8 +14,8 @@ var month = '2015-08-';
 var next_time;
 var end_time;
 var cur_session;
-
-var fake_time = moment(month+'20 08:55');
+var last;
+var preview = false;
 
 // scheduling
 var cron = require('cron');
@@ -67,10 +67,14 @@ app.get('/get_next_insert', function(req, res) {
 });
 
 app.get('/get_current', function(req, res) {
-  if (cur_session) {
-    res.json({uri: cur_session.uri, name: cur_session.name, offset: 5}); // pend
+  if (req.query.restart) {
+    last = moment(month+'20 08:55');
+    preview = true;
+    updateCurrent(function() {
+      sendCurrent(res);
+    });
   } else {
-    res.json({cur_session: false});
+    sendCurrent(res);
   }
 });
 
@@ -79,6 +83,13 @@ app.get('/reset_meta', function(req, res) {
     res.json(m);
   });
 });
+
+app.get('/get_delete_list', function(req, res) {
+  resetMeta(function(m) {
+    res.json(m);
+  });
+});
+
 
 function start() {
   end_time = moment(month+next_time.get('date')+' 19:30');
@@ -102,12 +113,13 @@ function insertSession(t, u, n) {
   });
 }
 
-function updateCurrent() {
-  var last;
-  if (fake_time) { // for testing
-    last = fake_time.add(5, 'minutes');
+function updateCurrent(cb) {
+  if (preview) { // for testing
+    last = last.add(5, 'minutes');
+  } else {
+    last = moment();
   }
-  last.minute(5 * Math.floor( fake_time.get('minute') / 5 ));
+  last.minute(5 * Math.floor( last.get('minute') / 5 ));
   last.second(0);
   last.millisecond(0);
 
@@ -119,7 +131,25 @@ function updateCurrent() {
       console.log('session not found for time '+last.format());
       cur_session = null;
     }
+    if (cb) cb();
   });
+}
+
+function sendCurrent(res) {
+  var offset;
+  if (preview) {
+    offset = moment().get('minute')%5*60+moment().get('second');
+  } else {
+    offset = moment().diff(last, 'seconds');
+    console.log(last.format());
+    console.log(moment().format());
+  }
+  console.log(offset);
+  if (cur_session) {
+    res.json({uri: cur_session.uri, name: cur_session.name, offset: offset});
+  } else {
+    res.json({cur_session: false});
+  }
 }
 
 function updateInsertTime() {  

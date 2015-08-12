@@ -1,107 +1,160 @@
 <html>
   <head>
-    <script src='http://code.jquery.com/jquery-2.1.4.min.js'></script>
-    <script src="https://www.youtube.com/player_api"></script>
-    <script>
-      var vids = [];
-      var ind = -1;
-
-      function loadPlaylist(cb) {
-        vids = [];
-        $.getJSON('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=25&playlistId=PLEBF3sxzEgI45cOD1tHh7jOnz2_S4lRg2&key=AIzaSyAfgBwj-gsnyKWTYVD2fNJZVH8gZpBBig0', function(res) {
-            for (var i=0; i<res.items.length; i++) {
-              vids.push(res.items[i].snippet.resourceId.videoId);
-            }
-            console.log(vids);
-            if (ind === -1) {
-              ind = Math.floor(Math.random()*vids.length);
-            }
-            cb();
-        });
-      }
-    </script>
- 
-
+    <script src="//use.typekit.net/rfz2ybg.js"></script>
+    <script>try{Typekit.load({ async: true });}catch(e){}</script>
+    <script src="https://f.vimeocdn.com/js/froogaloop2.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="jquery.vimeo.js"></script>
     <style>
       body { 
         margin: 0;
         padding: 0;
-        zoom: 1.333;
         background: rgb(0, 216, 255);
+        font-size: 1em;
+        font-family: "camingodos-web", Helvetica, Arial, sans-serif
       }
-      #ytplayer {
-        display: none;
+      #player1 {
+        opacity: 0;
+        display: block;
+        margin: 0 auto;
       }
+      .button {
+        position: fixed;
+        top: 8px;
+        padding: 5px;
+        cursor: pointer;
+        color: white;
+        background: rgb(0, 216, 255);
+        z-index: 3;
+        width: 16px;
+      }
+
+      #zoom {
+        left: 8px;
+      }
+
+      #q {
+        left: 39px;
+      }
+
+      #restart {
+        right: 8px;
+      }
+
+      .fullscreen {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0px;
+        left: 0px;
+      }
+
       #status {
-        position: absolute;
-        font-size: 30px;
-        top: 10px;
-        left: 10px;
+        width: 400px;
+        margin: 200px auto;
+        text-align: center;
+        color: white;
+        z-index: -1;
       }
+
+      #frame {
+        z-index: 2;
+      }
+
     </style>
+
   </head>
   <body>
-  <!-- <div id='status'>hi</div> -->
-  <div id="ytplayer"></div>
-  <script src="https://www.youtube.com/player_api"></script>
-  <script>
+    <script>
+    $(document).ready(function($) {
+      var offset = 0;
 
-  function onYouTubeIframeAPIReady() {
+      function start() {
+        console.log('start');
 
-    var player = new YT.Player('ytplayer', {
-      height: 1920,
-      width: 1080,
-      playerVars: {
-        autoplay: 1,
-        controls: 1,
-        disablekb: 0,
-        enablejsapi: 1,
-        fs: 0,
-        modestbranding: 1,
-        origin: 'localhost',
-        rel: 0,
-        showinfo: 0,
-        loop: 1,
-        start: 0//,
-        //suggestedQuality: 'hd1080'
-      },
-      events: {
-        'onReady': function (e) {
-          loadPlaylist(playNext);
-        },
-        'onStateChange': function (e) {
-          // vid is hidden until playing to eliminate youtube ui
-          if (e.data === YT.PlayerState.PLAYING) {
-            $('#ytplayer').css('display', 'block');
-          } else if (e.data === YT.PlayerState.ENDED) {
-            ind = ind + 1;
-            if (ind > vids.length - 1) {
-              // start over
-              loadPlaylist(playNext);
-            }
-            playNext();
-          }
-        },
-        'onError': function(e) {
-          console.log(e);
-          location.reload(); 
-        }//,
-        // 'onPlaybackQualityChange': function(e) {
-        //   var playbackQuality = e.target.getPlaybackQuality();
-        //   var suggestedQuality = 'hd1080';
-        //   $('#status').html('Quality changed to: ' + playbackQuality);
-        // }
+        var iframe = $('#player1')[0];
+        var player = $f(iframe);
+        player.addEvent('ready', function() {
+
+          player.api('seekTo', offset);
+          player.api('play');
+        });
+
+        player.addEvent('pause', function() {
+          player.api('play');
+        });
+
+        player.addEvent('finish', function() {
+          $('#player1').fadeTo(100, 0);
+          $('#status').html('One moment please.');
+          $('#status').fadeIn();
+          updateLive();
+        });
       }
+
+      updateLive(false, start);
+
+      // sizing stuff
+      var aspect = 1920/1080;
+      zoom(false);
+
+      $('#zoom').click(function() {
+        var dir = ($(this).attr('src') === 'zoomin.png');
+        zoom(dir);
+      });
+
+      $('#restart').click(function() {
+        $('#player1').css('opacity', 0);
+        $('#status').fadeIn();
+        $('#status').html('One moment please.');
+        updateLive(true);
+      });
+
+      function zoom(dir) {
+        if (dir) {
+          $('#zoom').attr('src', 'zoomout.png');
+          var w = window.innerWidth;
+          $('#player1').attr('width', w);
+          $('#player1').attr('height', w*aspect);
+        } else {
+          $('#zoom').attr('src', 'zoomin.png');
+          var h = window.innerHeight;
+          $('#player1').attr('width', h/aspect);
+          $('#player1').attr('height', h);
+        }
+      }
+
+      function updateLive(restart, cb) {
+        var url = restart ? '/get_current?restart=1' : '/get_current';
+        $.getJSON(url, function(res) {
+          if (res.uri) {
+            $('.button').fadeIn();
+            $('#status').delay(3500).fadeOut();
+            offset = Math.min(parseFloat(res.offset), 298); // clamp to 4:58 to be safe
+            var v = res.uri.replace('videos', 'video');
+            var s = 'https://player.vimeo.com'+v+'?api=1&controls=0&player_id=player1';
+            $('#player1').attr('src', s);
+            $('#player1').delay(4000).fadeTo(350, 1.0);
+          } else {
+            console.log('end');
+            $('.button').not('#restart').fadeOut();
+            $('#status').fadeIn();
+            $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 9am-7:30pm.');
+            $('#player1').css('opacity', 0);
+          }
+          if (cb) cb();
+        });
+      }
+      
     });
-    
-    function playNext() {
-      player.loadVideoById(vids[ind], 0, 'hd1080');
-      player.playVideo();
-    }
+    </script>
+   
+    <div class='fullscreen'><div id='status'>One moment please.</div></div>
+    <img class='button' id='zoom' src='zoomout.png' />
+    <img class='button' id='q' src='question.png' />
+    <img class='button' id='restart' src='restart.png' />
+    <div id='frame' class='fullscreen'></div>
+    <iframe id="player1" src="https://player.vimeo.com/video/136005785?api=1&controls=0&player_id=player1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
-
-  }
-  </script>
-  
   </body>
 </html>
