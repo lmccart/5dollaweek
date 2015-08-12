@@ -9,5 +9,6 @@ recordings2/*
 test_links/*
 old/*
 *.pkg
-*/upload.py
+upload/upload.py
+upload/delete.py
 */node_modules

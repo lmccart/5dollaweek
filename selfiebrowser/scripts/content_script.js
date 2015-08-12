@@ -18,13 +18,13 @@ $("document").ready(function(){
   $(video).css('margin-left', '-69px');
   
   $(video_container).css('position', 'fixed');
-  $(video_container).css('bottom', '20px');
-  $(video_container).css('left', '20px');
+  $(video_container).css('top', '20px');
+  $(video_container).css('right', '20px');
   $(video_container).css('width', '150px');
   $(video_container).css('height', '150px');
   $(video_container).css('border', '3px solid rgb(0, 216, 255)');
   $(video_container).css('overflow', 'hidden');
-  $(video_container).css('z-index', '4');
+  $(video_container).css('z-index', '1000');
 
   MediaStreamTrack.getSources(function(sourceInfos) {
     var audioSource = null;
