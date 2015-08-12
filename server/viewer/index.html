@@ -75,21 +75,23 @@
         var iframe = $('#player1')[0];
         var player = $f(iframe);
         player.addEvent('ready', function() {
-
+          console.log('ready');
           player.api('seekTo', offset);
           player.api('play');
+
+          player.addEvent('pause', function() {
+            player.api('play');
+          });
+
+          player.addEvent('finish', function() {
+            console.log('finish');
+            $('#player1').fadeTo(100, 0);
+            $('#status').html('One moment please.');
+            $('#status').fadeIn();
+            updateLive();
+          });
         });
 
-        player.addEvent('pause', function() {
-          player.api('play');
-        });
-
-        player.addEvent('finish', function() {
-          $('#player1').fadeTo(100, 0);
-          $('#status').html('One moment please.');
-          $('#status').fadeIn();
-          updateLive();
-        });
       }
 
       updateLive(false, start);
@@ -139,13 +141,13 @@
             console.log('end');
             $('.button').not('#restart').fadeOut();
             $('#status').fadeIn();
-            $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 9am-7:30pm.');
+            $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 10am-8pm.');
             $('#player1').css('opacity', 0);
           }
           if (cb) cb();
         });
       }
-      
+
     });
     </script>
    

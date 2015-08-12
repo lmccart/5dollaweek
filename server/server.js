@@ -11,6 +11,8 @@ console.log('Listening on '+app.get('port'));
 var moment = require('moment-timezone');
 moment.tz.setDefault('America/New_York');
 var month = '2015-08-';
+var start_time_str = ' 10:00';
+var end_time_str = ' 20:00';
 var next_time;
 var end_time;
 var cur_session;
@@ -68,7 +70,7 @@ app.get('/get_next_insert', function(req, res) {
 
 app.get('/get_current', function(req, res) {
   if (req.query.restart) {
-    last = moment(month+'20 08:55');
+    last = moment(month+'20'+start_time_str).substract(5, 'minutes');
     preview = true;
     updateCurrent(function() {
       sendCurrent(res);
@@ -92,14 +94,14 @@ app.get('/get_delete_list', function(req, res) {
 
 
 function start() {
-  end_time = moment(month+next_time.get('date')+' 19:30');
+  end_time = moment(month+next_time.get('date')+end_time_str);
   updateCurrent();
   cronJob.start();
 }
 
 function resetMeta(cb) {
   console.log('reset meta');
-  next_time = moment(month+'20 09:00');
+  next_time = moment(month+'20'+start_time_str);
   var m = { meta:true, next_time: next_time.format() };
   sessions.insert(m, function(err, result) {
     if (cb) cb(m);
@@ -141,10 +143,7 @@ function sendCurrent(res) {
     offset = moment().get('minute')%5*60+moment().get('second');
   } else {
     offset = moment().diff(last, 'seconds');
-    console.log(last.format());
-    console.log(moment().format());
   }
-  console.log(offset);
   if (cur_session) {
     res.json({uri: cur_session.uri, name: cur_session.name, offset: offset});
   } else {
@@ -155,8 +154,8 @@ function sendCurrent(res) {
 function updateInsertTime() {  
   next_time = next_time.add(5, 'm');
   if (!next_time.isBefore(end_time)) {
-    next_time = moment(month+(next_time.get('date')+1)+' 09:00');
-    end_time = moment(month+next_time.get('date')+' 19:30');
+    next_time = moment(month+(next_time.get('date')+1)+start_time_str);
+    end_time = moment(month+next_time.get('date')+end_time_str);
   }
 
   sessions.update({meta:true}, {$set: {next_time:next_time.format()}}, function(err, res) {
