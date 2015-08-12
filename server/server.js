@@ -53,14 +53,38 @@ app.get('/insert', function (req, res) {
   if (process.env.SERVER_PASS === req.query.pass) {
     var uri = req.query.uri;
     var name = req.query.name;
-    var t = next_time.format();
+    var time = next_time.format();
+    var date = next_time.get('date');
 
-    insertSession(t, uri, name);
+    var s = {date:date, time:time, uri:uri, name:name};
+    insertSession(s);
     updateInsertTime();
 
-    res.send('set u:'+uri+' n:'+name+' t:'+t);
+    s.success = true;
+    res.json(s);
   } else {
-    res.send('permission denied: thanks for trying');
+    res.json({success: false});
+  }
+});
+
+app.get('/get_old_sessions', function(req, res) {
+  if (process.env.SERVER_PASS === req.query.pass) {
+    var date = parseInt(req.query.date, 10);
+    sessions.find({date:date}).toArray(function(err, arr) {
+      var v = [];
+      if (!err && arr.length > 0) {
+        console.log(arr)
+        for (var i=0; i<arr.length; i++) {
+          v.push(arr[i].uri);
+        }
+      } else {
+        if (err) console.log(err);
+        else if (arr.length === 0) console.log('no videos found for date '+date);
+      }
+      res.json({success:true, vids: v});
+    });
+  } else {
+    res.json({success: false});
   }
 });
 
@@ -70,7 +94,7 @@ app.get('/get_next_insert', function(req, res) {
 
 app.get('/get_current', function(req, res) {
   if (req.query.restart) {
-    last = moment(month+'20'+start_time_str).substract(5, 'minutes');
+    last = moment(month+'20'+start_time_str).subtract(5, 'minutes');
     preview = true;
     updateCurrent(function() {
       sendCurrent(res);
@@ -108,8 +132,8 @@ function resetMeta(cb) {
   });
 }
 
-function insertSession(t, u, n) {
-  sessions.insert({ time:t, uri:u, name:n}, function(err, result) {
+function insertSession(s) {
+  sessions.insert(s, function(err, result) {
     assert.equal(err, null);
     console.log("inserted");
   });
