@@ -1,10 +1,11 @@
 <html>
   <head>
-    <script src="//use.typekit.net/rfz2ybg.js"></script>
+    <script src="js/typekit.js"></script>
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
-    <script src="https://f.vimeocdn.com/js/froogaloop2.min.js"></script>
-    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-    <script src="jquery.vimeo.js"></script>
+    <script src="js/froogaloop2.min.js"></script>
+    <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery.vimeo.js"></script>
+    <script src="js/jquery.mobile.js"></script>
     <style>
       body { 
         margin: 0;
@@ -18,6 +19,24 @@
         display: block;
         margin: 0 auto;
       }
+     
+      #status {
+        width: 400px;
+        margin: 200px auto;
+        text-align: center;
+        color: white;
+        z-index: -1;
+      }
+
+      .mobile {
+        font-size: 60px;
+        width: 80% !important;
+      }
+
+      #frame {
+        z-index: 2;
+      }
+
       .button {
         position: fixed;
         top: 8px;
@@ -25,8 +44,8 @@
         cursor: pointer;
         color: white;
         background: rgb(0, 216, 255);
-        z-index: 3;
         width: 16px;
+        z-index: 3;
       }
 
       #zoom {
@@ -46,9 +65,9 @@
         top: 12px;
         border: none;
         right: 39px;
-        z-index: 3;
         padding: 2px;
         width: 50px;
+        z-index: 3;
       }
 
       #setdate {
@@ -56,9 +75,9 @@
         top: 12px;
         border: none;
         right: 98px;
-        z-index: 3;
         padding: 2px;
         width: 55px;
+        z-index: 3;
       }
 
       .fullscreen {
@@ -69,136 +88,132 @@
         left: 0px;
       }
 
-      #status {
-        width: 400px;
-        margin: 200px auto;
-        text-align: center;
-        color: white;
-        z-index: -1;
-      }
-
-      #frame {
-        z-index: 2;
-      }
-
     </style>
 
   </head>
   <body>
     <script>
     $(document).ready(function($) {
-      var offset = 0;
 
-      function start() {
-        console.log('start');
+      if(jQuery.browser.mobile || navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
+        $('#player1').remove();
+        $('#interface').hide();
+        $('#status').html('Sorry! In order to ensure a quality viewing experience, the performance can only be seen on a desktop browser.');
+        $('#status').addClass('mobile');
+      } else {
+        var offset = 0;
 
-        var iframe = $('#player1')[0];
-        var player = $f(iframe);
-        player.addEvent('ready', function() {
-          console.log('ready');
-          player.api('seekTo', offset);
-          player.api('play');
+        updateLive(false, start);
+        
+        // sizing stuff
+        var aspect = 1920/1080;
+        zoom(false);
 
-          player.addEvent('pause', function() {
-            player.api('play');
-          });
-
-          player.addEvent('finish', function() {
-            console.log('finish');
-            $('#player1').fadeTo(100, 0);
-            $('#status').html('One moment please.');
-            $('#status').fadeIn();
-            updateLive();
-          });
+        $('#zoom').click(function() {
+          var dir = ($(this).attr('src') === 'zoomin.png');
+          zoom(dir);
         });
 
-      }
+        $('#restart').click(function() {
+          $('#player1').css('opacity', 0);
+          $('#status').fadeIn();
+          $('#status').html('One moment please.');
+          updateLive('start');
+        });
 
-      updateLive(false, start);
-
-      // sizing stuff
-      var aspect = 1920/1080;
-      zoom(false);
-
-      $('#zoom').click(function() {
-        var dir = ($(this).attr('src') === 'zoomin.png');
-        zoom(dir);
-      });
-
-      $('#restart').click(function() {
-        $('#player1').css('opacity', 0);
-        $('#status').fadeIn();
-        $('#status').html('One moment please.');
-        updateLive('start');
-      });
-
-      $('#settime').change(function() {
-        $('#player1').css('opacity', 0);
-        $('#status').fadeIn();
-        $('#status').html('One moment please.');
-        var time = $('#settime').val();
-        var date = $('#setdate').val();
-        if (time.length > 0) {
-          $('#settime').val('');
-          console.log(date+' '+time);
-          updateLive(date+' '+time);
-        }
-      });
-
-      function zoom(dir) {
-        if (dir) {
-          $('#zoom').attr('src', 'zoomout.png');
-          var w = window.innerWidth;
-          $('#player1').attr('width', w);
-          $('#player1').attr('height', w*aspect);
-        } else {
-          $('#zoom').attr('src', 'zoomin.png');
-          var h = window.innerHeight;
-          $('#player1').attr('width', h/aspect);
-          $('#player1').attr('height', h);
-        }
-      }
-
-      function updateLive(time, cb) {
-        var url = time ? '/get_current?restart='+time : '/get_current';
-        $.getJSON(url, function(res) {
-          if (res.uri) {
-            $('.button').fadeIn();
-            $('#status').delay(3500).fadeOut();
-            offset = Math.min(parseFloat(res.offset), 298); // clamp to 4:58 to be safe
-            var v = res.uri.replace('videos', 'video');
-            var s = 'https://player.vimeo.com'+v+'?api=1&controls=0&player_id=player1';
-            $('#player1').attr('src', s);
-            $('#player1').delay(4000).fadeTo(350, 1.0);
-          } else {
-            console.log('end');
-            $('.button').not('#restart').fadeOut();
-            $('#status').fadeIn();
-            $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 10am-8pm.');
-            $('#player1').css('opacity', 0);
+        $('#settime').change(function() {
+          $('#player1').css('opacity', 0);
+          $('#status').fadeIn();
+          $('#status').html('One moment please.');
+          var time = $('#settime').val();
+          var date = $('#setdate').val();
+          if (time.length > 0) {
+            $('#settime').val('');
+            console.log(date+' '+time);
+            updateLive(date+' '+time);
           }
-          if (cb) cb();
         });
-      }
 
+        function zoom(dir) {
+          if (dir) {
+            $('#zoom').attr('src', 'zoomout.png');
+            var w = window.innerWidth;
+            $('#player1').attr('width', w);
+            $('#player1').attr('height', w*aspect);
+          } else {
+            $('#zoom').attr('src', 'zoomin.png');
+            var h = window.innerHeight;
+            $('#player1').attr('width', h/aspect);
+            $('#player1').attr('height', h);
+          }
+        }
+
+        function updateLive(time, cb) {
+          var url = time ? '/get_current?restart='+time : '/get_current';
+          $.getJSON(url, function(res) {
+            if (res.uri) {
+              $('.button').fadeIn();
+              $('#status').delay(3500).fadeOut();
+              offset = Math.min(parseFloat(res.offset), 298); // clamp to 4:58 to be safe
+              var v = res.uri.replace('videos', 'video');
+              var s = 'https://player.vimeo.com'+v+'?api=1&controls=0&player_id=player1';
+              $('#player1').attr('src', s);
+              $('#player1').delay(4000).fadeTo(350, 1.0);
+            } else {
+              console.log('end');
+              $('.button').not('#restart').fadeOut();
+              $('#status').fadeIn();
+              $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 10am-8pm.');
+              $('#player1').css('opacity', 0);
+            }
+            if (cb) cb();
+          });
+        }
+
+        function start() {
+          console.log('start');
+
+          var iframe = $('#player1')[0];
+          var player = $f(iframe);
+          player.addEvent('ready', function() {
+            console.log('ready');
+            player.api('seekTo', offset);
+            player.api('play');
+
+            player.addEvent('pause', function() {
+              player.api('play');
+            });
+
+            player.addEvent('finish', function() {
+              console.log('finish');
+              $('#player1').fadeTo(100, 0);
+              $('#status').html('One moment please.');
+              $('#status').fadeIn();
+              updateLive();
+            });
+          });
+        }
+      }
     });
     </script>
    
     <div class='fullscreen'><div id='status'>One moment please.</div></div>
-    <img class='button' id='zoom' src='zoomout.png' />
-    <img class='button' id='q' src='question.png' />
-    <select id='setdate'>
-      <option value='2015-08-20'>8/20</option>
-      <option value='2015-08-21'>8/21</option>
-      <option value='2015-08-22'>8/22</option>
-      <option value='2015-08-23'>8/23</option>
-      <option value='2015-08-24'>8/24</option>
-      <option value='2015-08-25'>8/25</option>
-    </select>
-    <input id='settime' placeholder='10:00'></input>
-    <img class='button' id='restart' src='restart.png' />
+    <div id='interface'>
+      <img class='button' id='zoom' src='zoomout.png' />
+      <img class='button' id='q' src='question.png' />
+      <select id='setdate'>
+        <option value='2015-08-20'>8/20</option>
+        <option value='2015-08-21'>8/21</option>
+        <option value='2015-08-22'>8/22</option>
+        <option value='2015-08-23'>8/23</option>
+        <option value='2015-08-24'>8/24</option>
+        <option value='2015-08-25'>8/25</option>
+      </select>
+      <input id='settime' placeholder='10:00'></input>
+      <img class='button' id='restart' src='restart.png' />
+    </div>
     <div id='frame' class='fullscreen'></div>
-    <iframe id="player1" src="https://player.vimeo.com/video/136134373?api=1&controls=0&player_id=player1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+    <iframe id="player1" src="https://player.vimeo.com/video/136221205?api=1&controls=0&player_id=player1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 
   </body>
 </html>
