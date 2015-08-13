@@ -55,8 +55,9 @@ app.get('/insert', function (req, res) {
     var name = req.query.name;
     var time = next_time.format();
     var date = next_time.get('date');
+    var hour = next_time.get('hour');
 
-    var s = {date:date, time:time, uri:uri, name:name};
+    var s = {date:date, hour:hour, time:time, uri:uri, name:name};
     insertSession(s);
     updateInsertTime();
 
@@ -70,7 +71,11 @@ app.get('/insert', function (req, res) {
 app.get('/get_old_sessions', function(req, res) {
   if (process.env.SERVER_PASS === req.query.pass) {
     var date = parseInt(req.query.date, 10);
-    sessions.find({date:date}).toArray(function(err, arr) {
+    var s = {date:date};
+    if (req.query.hour) {
+      s.hour = parseInt(req.query.hour, 10);
+    }
+    sessions.find(s).toArray(function(err, arr) {
       var v = [];
       if (!err && arr.length > 0) {
         console.log(arr)
@@ -111,12 +116,6 @@ app.get('/get_current', function(req, res) {
 });
 
 app.get('/reset_meta', function(req, res) {
-  resetMeta(function(m) {
-    res.json(m);
-  });
-});
-
-app.get('/get_delete_list', function(req, res) {
   resetMeta(function(m) {
     res.json(m);
   });
