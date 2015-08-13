@@ -94,7 +94,13 @@ app.get('/get_next_insert', function(req, res) {
 
 app.get('/get_current', function(req, res) {
   if (req.query.restart) {
-    last = moment(month+'20'+start_time_str).subtract(5, 'minutes');
+    if (req.query.restart === 'start') {
+      last = moment(month+'20'+start_time_str);
+    } else {
+      last = moment(req.query.restart);
+    }
+    last = last.subtract(5, 'minutes'); // sub 5 bc it will get added in updateCurrent
+    console.log(last.format());
     preview = true;
     updateCurrent(function() {
       sendCurrent(res);
