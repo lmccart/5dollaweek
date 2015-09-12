@@ -159,7 +159,6 @@
           if (time.length > 0) {
             $('#settime').val('');
             console.log(date+' '+time);
-            getCurrent(date+' '+time);
           }
         });
 
@@ -177,10 +176,9 @@
           }
         }
 
-        function getCurrent(time, cb) {
+        function updateLive(time, cb) {
           var url = time ? '/get_current?restart='+time : '/get_current';
           $.getJSON(url, function(res) {
-            console.log(res);
             if (res.uri) {
               offset = Math.min(parseFloat(res.offset), 298); // clamp to 4:58 to be safe
               var v = res.uri.replace('videos', 'video');
@@ -228,7 +226,7 @@
                 $('#status').html('One moment please.');
                 $('#status').fadeIn();
                 if (playing) {
-                  //setTimeout(getCurrent, 1500); //pend
+                  setTimeout(updateLive, 1500);
                 }
               });
             }
@@ -237,7 +235,7 @@
 
         $('#status').html(about+'<p>One moment please.</p>');
         zoom(false);
-        getCurrent('start', start);
+        updateLive(false, start);
       }
     });
     </script>
@@ -254,7 +252,7 @@
     </div>
     <div id='interface'>
       <img class='button' id='zoom' src='zoomout.png' />
-      <select id='setdate'>
+      <!--<select id='setdate'>
         <option value='2015-08-20'>8/20</option>
         <option value='2015-08-21'>8/21</option>
         <option value='2015-08-22'>8/22</option>
@@ -263,7 +261,7 @@
         <option value='2015-08-25'>8/25</option>
       </select>
       <input id='settime' placeholder='10:00'></input>
-      <img class='button' id='restart' src='restart.png' />
+      <img class='button' id='restart' src='restart.png' />-->
       <img class='button' id='question' src='question.png' />
     </div>
     <div id='frame' class='fullscreen'></div>
