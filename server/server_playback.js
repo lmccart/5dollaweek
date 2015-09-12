@@ -48,41 +48,7 @@ MongoClient.connect(process.env.MONGOLAB_URI, function(err, db) {
 });
 
 
-app.get('/update_uri', function (req, res) {
-  if (process.env.SERVER_PASS === req.query.pass) {
-    var uri = req.query.uri;
-    var name = req.query.name;
-    var time = next_time.format();
-    var date = next_time.get('date');
-    var hour = next_time.get('hour');
-
-    var s = {date:date, hour:hour, time:time, uri:uri, name:name};
-    sessions.find({name:s.name}).toArray(function(err, arr) {
-      if (arr.length > 0) {
-        sessions.findAndModify({name:s.name},
-          ['_id','asc'],
-          {$set: {uri: s.uri}},
-          function(err, obj) {
-            assert.equal(err, null);
-            console.log("updated  "+s.name);
-        });
-      } else {
-        sessions.insert(s, function(err, result) {
-          assert.equal(err, null);
-          console.log("inserted new "+s.name);
-        });
-        updateInsertTime();
-      }
-    });
-
-    s.success = true;
-    res.json(s);
-  } else {
-    res.json({success: false});
-  }
-});
-
-
+// // Routes
 app.get('/insert', function (req, res) {
   if (process.env.SERVER_PASS === req.query.pass) {
     var uri = req.query.uri;
@@ -92,10 +58,7 @@ app.get('/insert', function (req, res) {
     var hour = next_time.get('hour');
 
     var s = {date:date, hour:hour, time:time, uri:uri, name:name};
-    sessions.insert(s, function(err, result) {
-      assert.equal(err, null);
-      console.log("inserted");
-    });
+    insertSession(s);
     updateInsertTime();
 
     s.success = true;
@@ -183,6 +146,12 @@ function resetMeta(cb) {
   });
 }
 
+function insertSession(s) {
+  sessions.insert(s, function(err, result) {
+    assert.equal(err, null);
+    console.log("inserted");
+  });
+}
 
 function updateCurrent(cb) {
   if (preview) { // for testing

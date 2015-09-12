@@ -6,11 +6,12 @@
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/jquery.vimeo.js"></script>
     <script src="js/jquery.mobile.js"></script>
+    <link rel="icon" type="image/ico" href="EO.ico"/>
     <style>
       body { 
         margin: 0;
         padding: 0;
-        background: rgb(0, 216, 255);
+        background: #12ebfa;
         font-size: 1em;
         font-family: "camingodos-web", Helvetica, Arial, sans-serif
       }
@@ -20,17 +21,32 @@
         margin: 0 auto;
       }
      
-      #status {
+      #status, #about {
         width: 400px;
-        margin: 200px auto;
-        text-align: center;
+        margin: 125px auto;
         color: white;
+        text-align: left;
+      }
+
+      #status {
         z-index: -1;
       }
 
+      #aboutfull {
+        z-index: 3;
+        background: #12ebfa;
+        display: none;
+      }
+
+      #aboutclose {
+        margin-top: 30px;
+        margin-left: 192px;
+        width: 16px;
+        cursor: pointer;
+      }
+
       .mobile {
-        font-size: 60px;
-        width: 80% !important;
+        width: 70% !important;
       }
 
       #frame {
@@ -43,7 +59,7 @@
         padding: 5px;
         cursor: pointer;
         color: white;
-        background: rgb(0, 216, 255);
+        background: #12ebfa;
         width: 16px;
         z-index: 3;
       }
@@ -52,19 +68,19 @@
         left: 8px;
       }
 
-      #q {
-        left: 39px;
+      #question {
+        right: 8px;
       }
 
       #restart {
-        right: 8px;
+        right: 39px;
       }
 
       #settime {
         position: fixed;
         top: 12px;
         border: none;
-        right: 39px;
+        right: 78px;
         padding: 2px;
         width: 50px;
         z-index: 3;
@@ -74,7 +90,7 @@
         position: fixed;
         top: 12px;
         border: none;
-        right: 98px;
+        right: 137px;
         padding: 2px;
         width: 55px;
         z-index: 3;
@@ -95,6 +111,8 @@
     <script>
     $(document).ready(function($) {
 
+      var about = '<p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I will run through my program manually, spending five minutes with each person, trying to get to know you better. If we are strangers or just acquaintances, I will imagine what it might be like if we were friends.</p><p>I will do this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I will perform for 10 hours a day nonstop for a week. The performance will be broadcast live on the internet for anyone to watch.</p>';
+
       if(jQuery.browser.mobile || navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
         $('#player1').remove();
         $('#interface').hide();
@@ -102,23 +120,34 @@
         $('#status').addClass('mobile');
       } else {
         var offset = 0;
-
-        updateLive(false, start);
+        var playing = false;
         
         // sizing stuff
         var aspect = 1920/1080;
-        zoom(false);
 
         $('#zoom').click(function() {
           var dir = ($(this).attr('src') === 'zoomin.png');
           zoom(dir);
         });
 
+        $('#question').click(function() {
+          console.log($('#aboutfull').is(':visible'))
+          if ($('#aboutfull').is(':visible')) {
+            $('#aboutfull').stop(true).fadeOut();
+          } else {
+            console.log('fade in')
+            $('#aboutfull').stop(true).fadeIn();
+          }
+        });
+
+        $('#aboutclose').click(function() {
+          $('#aboutfull').stop(true).fadeOut();
+        });
+
         $('#restart').click(function() {
           $('#player1').css('opacity', 0);
           $('#status').fadeIn();
           $('#status').html('One moment please.');
-          updateLive('start');
         });
 
         $('#settime').change(function() {
@@ -130,7 +159,6 @@
           if (time.length > 0) {
             $('#settime').val('');
             console.log(date+' '+time);
-            updateLive(date+' '+time);
           }
         });
 
@@ -152,19 +180,18 @@
           var url = time ? '/get_current?restart='+time : '/get_current';
           $.getJSON(url, function(res) {
             if (res.uri) {
-              $('.button').fadeIn();
-              $('#status').delay(3500).fadeOut();
               offset = Math.min(parseFloat(res.offset), 298); // clamp to 4:58 to be safe
               var v = res.uri.replace('videos', 'video');
               var s = 'https://player.vimeo.com'+v+'?api=1&controls=0&player_id=player1';
               $('#player1').attr('src', s);
-              $('#player1').delay(4000).fadeTo(350, 1.0);
+              playing = true;
             } else {
-              console.log('end');
+              console.log('END: '+res.explain);
               $('.button').not('#restart').fadeOut();
               $('#status').fadeIn();
-              $('#status').html('The performance has ended for today.<br>Come back to see it tomorrow 10am-8pm.');
+              $('#status').html(about+'<p style="font-weight:bold">'+res.explain+'</p>');
               $('#player1').css('opacity', 0);
+              playing = false;
             }
             if (cb) cb();
           });
@@ -177,31 +204,55 @@
           var player = $f(iframe);
           player.addEvent('ready', function() {
             console.log('ready');
-            player.api('seekTo', offset);
-            player.api('play');
 
-            player.addEvent('pause', function() {
+            if (playing) {
+              player.api('seekTo', offset);
+              player.api('setVolume', 0);
               player.api('play');
-            });
 
-            player.addEvent('finish', function() {
-              console.log('finish');
-              $('#player1').fadeTo(100, 0);
-              $('#status').html('One moment please.');
-              $('#status').fadeIn();
-              updateLive();
-            });
+              player.addEvent('play', function() {
+                $('.button').fadeIn();
+                $('#status').delay(3500).fadeOut();
+                $('#player1').delay(4000).fadeTo(350, 1.0);
+              });
+
+              player.addEvent('pause', function() {
+                player.api('play');
+              });
+
+              player.addEvent('finish', function() {
+                console.log('finish');
+                $('#player1').css('opacity', 0)
+                $('#status').html('One moment please.');
+                $('#status').fadeIn();
+                if (playing) {
+                  setTimeout(updateLive, 1500);
+                }
+              });
+            }
           });
         }
+
+        $('#status').html(about+'<p>One moment please.</p>');
+        zoom(false);
+        updateLive(false, start);
       }
     });
     </script>
    
-    <div class='fullscreen'><div id='status'>One moment please.</div></div>
+    <div class='fullscreen'>
+      <div id='status'>One moment please.</div>
+    </div>
+    <div class='fullscreen' id='aboutfull'>
+      <div id='about'>
+      <p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I will run through my program manually, spending five minutes with each person, trying to get to know you better. If we are strangers or just acquaintances, I will imagine what it might be like if we were friends.</p><p>I will do this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I will perform for 10 hours a day nonstop for a week. The performance will be broadcast live on the internet for anyone to watch.</p>
+        <img id='aboutclose' src='x.png'/>
+      </div>
+
+    </div>
     <div id='interface'>
       <img class='button' id='zoom' src='zoomout.png' />
-      <img class='button' id='q' src='question.png' />
-      <select id='setdate'>
+      <!--<select id='setdate'>
         <option value='2015-08-20'>8/20</option>
         <option value='2015-08-21'>8/21</option>
         <option value='2015-08-22'>8/22</option>
@@ -210,7 +261,8 @@
         <option value='2015-08-25'>8/25</option>
       </select>
       <input id='settime' placeholder='10:00'></input>
-      <img class='button' id='restart' src='restart.png' />
+      <img class='button' id='restart' src='restart.png' />-->
+      <img class='button' id='question' src='question.png' />
     </div>
     <div id='frame' class='fullscreen'></div>
     <iframe id="player1" src="https://player.vimeo.com/video/136221205?api=1&controls=0&player_id=player1" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
