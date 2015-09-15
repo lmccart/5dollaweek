@@ -11,7 +11,7 @@ server.listen(app.get('port'));
 console.log('Listening on '+app.get('port'));
 
 var all;
-var ind = 114;
+var ind = 220;
 
 // db stuff
 var MongoClient = require('mongodb').MongoClient;
@@ -63,7 +63,7 @@ function upload(n) {
     };
 
     python.run('upload.py', options, function (err, results) {
-      assert.equal(err, null);
+      if (err) console.log(err);
       // results is an array consisting of messages collected during execution
       console.log('results: %j', results);
       ind++;

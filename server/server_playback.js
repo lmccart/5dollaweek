@@ -58,19 +58,18 @@ function getCurrent(res, time) {
     } else {
       console.log('session not found for time '+time.format());
     }
-    sendCurrent(res, session, offset);
+    sendCurrent(res, session, time, offset);
   });
 }
 
-function sendCurrent(res, session, offset) {
+function sendCurrent(res, session, time, offset) {
   if (session) {
     res.json({uri: session.uri, name: session.name, offset: offset});
   } else {
 
     var explain;
-    var d = moment().get('date');
-    var h = moment().get('hour');
-
+    var d = time.get('date');
+    var h = time.get('hour');
 
     var viewit = 'You can view it live 8/20-25 from 10am-8pm EST.';
 
@@ -83,17 +82,9 @@ function sendCurrent(res, session, offset) {
         explain = 'The performance has not yet begun today.<br>'+viewit;
       } else if (h > 19) {
         explain = 'The performance has ended for today.<br>'+viewit;
-      } else if (h == 12) {
-        explain = 'Performance will resume after a break from 12-12:15pm.';
-      } else if (h == 14) {
-        explain = 'Performance will resume after a break from 2-2:15pm.';
-      } 
-      // else if (h == 16) {
-      //   explain = 'Performance will resume after a break from 4-4:15pm.';
-      // } else if (h == 18) {
-      //   explain = 'Performance will resume after a break from 6-6:15pm.';
-      // }
-      console.log(h)
+      } else {
+        explain = 'Performance will resume after a break from '+h+':00-'+h+':15.';
+      }
     }
     res.json({cur_session: false, explain: explain});
   }
