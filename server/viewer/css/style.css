@@ -1,0 +1,107 @@
+body { 
+  margin: 0;
+  padding: 0;
+  background: #12ebfa;
+  font-size: 1em;
+  font-family: "camingodos-web", Helvetica, Arial, sans-serif
+}
+#player1 {
+  opacity: 0;
+  display: block;
+  margin: 0 auto;
+}
+
+#status, #about {
+  width: 400px;
+  margin: 125px auto;
+  color: white;
+  text-align: left;
+}
+
+#status {
+  z-index: -1;
+}
+
+#aboutfull {
+  z-index: 3;
+  background: #12ebfa;
+  display: none;
+}
+
+#aboutclose {
+  margin-top: 30px;
+  margin-left: 192px;
+  width: 16px;
+  cursor: pointer;
+}
+
+.mobile {
+  width: 70% !important;
+}
+
+#frame {
+  z-index: 2;
+}
+
+.button {
+  position: fixed;
+  top: 8px;
+  padding: 5px;
+  cursor: pointer;
+  color: white;
+  background: #12ebfa;
+  width: 16px;
+  z-index: 3;
+}
+
+#slider {
+  position: fixed;
+  top: 8px;
+  right: 58px;
+  padding: 5px;
+  cursor: pointer;
+  color: white;
+  background: #12ebfa;
+  width: 160px;
+  z-index: 3;
+}
+
+#zoom {
+  left: 8px;
+}
+
+#question {
+  right: 8px;
+}
+
+#restart {
+  right: 39px;
+}
+
+#settime {
+  position: fixed;
+  top: 12px;
+  border: none;
+  right: 78px;
+  padding: 2px;
+  width: 50px;
+  z-index: 3;
+}
+
+#setdate {
+  position: fixed;
+  top: 12px;
+  border: none;
+  right: 137px;
+  padding: 2px;
+  width: 55px;
+  z-index: 3;
+}
+
+.fullscreen {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}

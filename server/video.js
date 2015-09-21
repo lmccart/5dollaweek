@@ -11,7 +11,7 @@ server.listen(app.get('port'));
 console.log('Listening on '+app.get('port'));
 
 var all;
-var ind = 220;
+var ind = 600;
 
 // db stuff
 var MongoClient = require('mongodb').MongoClient;
@@ -35,22 +35,27 @@ MongoClient.connect(process.env.MONGOLAB_URI, function(err, db) {
 });
 
 function checkVid() {
-  var vid = all[ind].uri.replace('/videos/', '');
-  request.get('http://vimeo.com/'+vid, {timeout: 30000, json:false}, function (error, result) {
-    var info = ind+' '+all[ind].name+' '+all[ind].uri+' '+all[ind].time;
-    if (result.statusCode === 200) {
-      console.log('OK '+info);
-      ind++;
-      checkVid();
-    } else if (result.statusCode === 404) {
-      console.log('NOT FOUND '+info);
-      // upload and update entry
-      upload(all[ind].name)
-    } else {
-      console.log('UNKNOWN '+info)
-    }
+  if (all[ind].meta) {
+    ind++;
+    checkVid();
+  } else {
+    var vid = all[ind].uri.replace('/videos/', '');
+    request.get('http://vimeo.com/'+vid, {timeout: 30000, json:false}, function (error, result) {
+      var info = ind+' '+all[ind].name+' '+all[ind].uri+' '+all[ind].time;
+      if (result.statusCode === 200) {
+        console.log('OK '+info);
+        ind++;
+        checkVid();
+      } else if (result.statusCode === 404) {
+        console.log('NOT FOUND '+info);
+        // upload and update entry
+        upload(all[ind].name)
+      } else {
+        console.log('UNKNOWN '+info)
+      }
 
-  });
+    });
+  }
 }
 
 function upload(n) {

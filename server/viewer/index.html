@@ -4,107 +4,13 @@
     <script>try{Typekit.load({ async: true });}catch(e){}</script>
     <script src="js/froogaloop2.min.js"></script>
     <script src="js/jquery-1.11.3.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script src="js/jquery.vimeo.js"></script>
     <script src="js/jquery.mobile.js"></script>
+    <script src="js/date_format.js"></script>
     <link rel="icon" type="image/ico" href="EO.ico"/>
-    <style>
-      body { 
-        margin: 0;
-        padding: 0;
-        background: #12ebfa;
-        font-size: 1em;
-        font-family: "camingodos-web", Helvetica, Arial, sans-serif
-      }
-      #player1 {
-        opacity: 0;
-        display: block;
-        margin: 0 auto;
-      }
-     
-      #status, #about {
-        width: 400px;
-        margin: 125px auto;
-        color: white;
-        text-align: left;
-      }
-
-      #status {
-        z-index: -1;
-      }
-
-      #aboutfull {
-        z-index: 3;
-        background: #12ebfa;
-        display: none;
-      }
-
-      #aboutclose {
-        margin-top: 30px;
-        margin-left: 192px;
-        width: 16px;
-        cursor: pointer;
-      }
-
-      .mobile {
-        width: 70% !important;
-      }
-
-      #frame {
-        z-index: 2;
-      }
-
-      .button {
-        position: fixed;
-        top: 8px;
-        padding: 5px;
-        cursor: pointer;
-        color: white;
-        background: #12ebfa;
-        width: 16px;
-        z-index: 3;
-      }
-
-      #zoom {
-        left: 8px;
-      }
-
-      #question {
-        right: 8px;
-      }
-
-      #restart {
-        right: 39px;
-      }
-
-      #settime {
-        position: fixed;
-        top: 12px;
-        border: none;
-        right: 78px;
-        padding: 2px;
-        width: 50px;
-        z-index: 3;
-      }
-
-      #setdate {
-        position: fixed;
-        top: 12px;
-        border: none;
-        right: 137px;
-        padding: 2px;
-        width: 55px;
-        z-index: 3;
-      }
-
-      .fullscreen {
-        width: 100%;
-        height: 100%;
-        position: fixed;
-        top: 0px;
-        left: 0px;
-      }
-
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
 
   </head>
   <body>
@@ -124,6 +30,11 @@
         
         // sizing stuff
         var aspect = 1920/1080;
+
+        $('#slider').slider({ 
+          max: 625,
+          change: updateTime
+        });
 
         $('#zoom').click(function() {
           var dir = ($(this).attr('src') === 'zoomin.png');
@@ -163,6 +74,15 @@
           }
         });
 
+        function updateTime() {
+          $('#player1').css('opacity', 0);
+          $('#status').fadeIn();
+          $('#status').html('One moment please.');
+          var val = $('#slider').slider('value');
+          console.log(val);
+          getCurrent(val);
+        }
+
         function zoom(dir) {
           if (dir) {
             $('#zoom').attr('src', 'zoomout.png');
@@ -178,7 +98,11 @@
         }
 
         function getCurrent(time, cb) {
-          var url = time ? '/get_current?restart='+time : '/get_current';
+          var url;
+          if (typeof time === 'undefined') url = '/get_current';
+          else if (typeof time === 'number') url = '/get_current?ind='+(time+1);
+          else url = '/get_current?restart='+time;
+
           $.getJSON(url, function(res) {
             console.log(res);
             if (res.uri) {
@@ -254,7 +178,7 @@
     </div>
     <div id='interface'>
       <img class='button' id='zoom' src='zoomout.png' />
-      <select id='setdate'>
+      <!--<select id='setdate'>
         <option value='2015-08-20'>8/20</option>
         <option value='2015-08-21'>8/21</option>
         <option value='2015-08-22'>8/22</option>
@@ -263,7 +187,8 @@
         <option value='2015-08-25'>8/25</option>
       </select>
       <input id='settime' placeholder='10:00'></input>
-      <img class='button' id='restart' src='restart.png' />
+      <img class='button' id='restart' src='restart.png' />-->
+      <div id='slider'></div>
       <img class='button' id='question' src='question.png' />
     </div>
     <div id='frame' class='fullscreen'></div>
