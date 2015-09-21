@@ -657,8 +657,8 @@ button.ui-button::-moz-focus-inner {
 .ui-slider .ui-slider-handle {
 	position: absolute;
 	z-index: 2;
-	width: 10px;
-	height: 20px;
+	width: 5px;
+	height: 17px;
   border: none !important;
   outline: none !important;
   background: white !important;
@@ -666,7 +666,6 @@ button.ui-button::-moz-focus-inner {
 .ui-slider .ui-slider-range {
 	position: absolute;
 	z-index: 1;
-	font-size: .7em;
 	display: block;
 	border: 0;
 	background-position: 0 0;
@@ -678,12 +677,10 @@ button.ui-button::-moz-focus-inner {
 	filter: inherit;
 }
 
-.ui-slider-horizontal {
-	height: .8em;
-}
+
 .ui-slider-horizontal .ui-slider-handle {
-	top: -.3em;
-	margin-left: -.6em;
+	top: -7px;
+	margin-left: -5px;
 }
 .ui-slider-horizontal .ui-slider-range {
 	top: 0;
@@ -826,7 +823,8 @@ body .ui-tooltip {
 }
 .ui-widget-content {
 	background: white !important;
-	height: 3px;
+	height: 2px;
+	margin-top: 13px;
 	padding: 0px !important;
 }
 

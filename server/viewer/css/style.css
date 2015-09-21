@@ -57,12 +57,21 @@ body {
 #slider {
   position: fixed;
   top: 8px;
-  right: 58px;
+  right: 45px;
   padding: 5px;
   cursor: pointer;
   color: white;
   background: #12ebfa;
   width: 160px;
+  z-index: 3;
+}
+
+#time {
+  position: fixed;
+  top: 7px;
+  right: 225px;
+  padding: 5px;
+  color: white;
   z-index: 3;
 }
 

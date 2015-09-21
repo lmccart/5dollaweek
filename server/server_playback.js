@@ -88,7 +88,7 @@ function getCurrent(res, time) {
 function sendCurrent(res, session, time, offset) {
   if (session) {
     if (time.format) time = time.format();
-    res.json({uri: session.uri, name: session.name, time:time, offset: offset});
+    res.json({uri: session.uri, name: session.name, time:time, offset: offset, order:session.order});
   } else {
 
     var explain;

@@ -33,7 +33,7 @@
 
         $('#slider').slider({ 
           max: 625,
-          change: updateTime
+          stop: updateTime
         });
 
         $('#zoom').click(function() {
@@ -79,7 +79,6 @@
           $('#status').fadeIn();
           $('#status').html('One moment please.');
           var val = $('#slider').slider('value');
-          console.log(val);
           getCurrent(val);
         }
 
@@ -110,6 +109,10 @@
               var v = res.uri.replace('videos', 'video');
               var s = 'https://player.vimeo.com'+v+'?api=1&controls=0&player_id=player1';
               $('#player1').attr('src', s);
+              $('#slider').slider('value', res.order);
+              var d = new Date(res.time);
+              $('#time').text(d.format('HH:MM m/d/yy'));
+              $('#time').stop().show().delay(8000).fadeOut();
               playing = true;
             } else {
               console.log('END: '+res.explain);
@@ -188,6 +191,7 @@
       </select>
       <input id='settime' placeholder='10:00'></input>
       <img class='button' id='restart' src='restart.png' />-->
+      <div id='time'>3:39 8/20/15</div>
       <div id='slider'></div>
       <img class='button' id='question' src='question.png' />
     </div>
