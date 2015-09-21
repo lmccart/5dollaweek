@@ -17,6 +17,9 @@
     <script>
     $(document).ready(function($) {
 
+      var last_start = 0;
+      var cur_sesh = 0;
+
       var about = '<p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I will run through my program manually, spending five minutes with each person, trying to get to know you better. If we are strangers or just acquaintances, I will imagine what it might be like if we were friends.</p><p>I will do this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I will perform for 10 hours a day nonstop for a week. The performance will be broadcast live on the internet for anyone to watch.</p>';
 
       if(jQuery.browser.mobile || navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
@@ -97,9 +100,25 @@
         }
 
         function getCurrent(time, cb) {
+          console.log('time = '+time);
+          if (typeof time === 'undefined') {
+            if (!last_start) {
+              cur_sesh = 0;
+            } else {
+              var diff = new Date().getTime() - last_start;
+              if (diff >= 5000) {
+                cur_sesh = (cur_sesh+1)%626;
+              }
+            }
+            console.log('sesh = '+cur_sesh);
+            time = cur_sesh;
+          }
+
           var url;
-          if (typeof time === 'undefined') url = '/get_current';
-          else if (typeof time === 'number') url = '/get_current?ind='+(time+1);
+          if (typeof time === 'number') {
+            url = '/get_current?ind='+(time+1);
+            cur_sesh = time;
+          }
           else url = '/get_current?restart='+time;
 
           $.getJSON(url, function(res) {
@@ -113,14 +132,11 @@
               var d = new Date(res.time);
               $('#time').text(d.format('HH:MM m/d/yy'));
               $('#time').stop().show().delay(8000).fadeOut();
+              last_start = new Date().getTime();
+              cur_sesh = res.order;
               playing = true;
             } else {
-              console.log('END: '+res.explain);
-              $('.button').not('#restart').fadeOut();
-              $('#status').fadeIn();
-              $('#status').html(about+'<p style="font-weight:bold">'+res.explain+'</p>');
-              $('#player1').css('opacity', 0);
-              playing = false;
+              console.log('ERROR');
             }
             if (cb) cb();
           });
@@ -155,7 +171,7 @@
                 $('#status').html('One moment please.');
                 $('#status').fadeIn();
                 if (playing) {
-                  //setTimeout(getCurrent, 1500); //pend
+                  setTimeout(getCurrent, 1000);
                 }
               });
             }
