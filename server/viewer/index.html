@@ -18,9 +18,9 @@
     $(document).ready(function($) {
 
       var last_start = 0;
-      var cur_sesh = 0;
+      var cur_sesh = Math.floor(Math.random()*626);
 
-      var about = '<p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I will run through my program manually, spending five minutes with each person, trying to get to know you better. If we are strangers or just acquaintances, I will imagine what it might be like if we were friends.</p><p>I will do this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I will perform for 10 hours a day nonstop for a week. The performance will be broadcast live on the internet for anyone to watch.</p>';
+      var about = '<p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I ran through my program manually, spending five minutes with each person, trying to get to know you better. If we were strangers or just acquaintances, I imagined what it might be like if we were friends.</p><p>I did this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I performed for 10 hours a day nonstop for a week. The performance was broadcast live on the internet for anyone to watch.</p>';
 
       if(jQuery.browser.mobile || navigator.userAgent.match(/(iPad|iPhone|iPod)/g)) {
         $('#player1').remove();
@@ -47,15 +47,15 @@
         $('#question').click(function() {
           console.log($('#aboutfull').is(':visible'))
           if ($('#aboutfull').is(':visible')) {
-            $('#aboutfull').stop(true).fadeOut();
+            $('#aboutfull').finish().fadeOut();
           } else {
             console.log('fade in')
-            $('#aboutfull').stop(true).fadeIn();
+            $('#aboutfull').finish().fadeIn();
           }
         });
 
         $('#aboutclose').click(function() {
-          $('#aboutfull').stop(true).fadeOut();
+          $('#aboutfull').finish().fadeOut();
         });
 
         $('#restart').click(function() {
@@ -131,7 +131,7 @@
               $('#slider').slider('value', res.order);
               var d = new Date(res.time);
               $('#time').text(d.format('HH:MM m/d/yy'));
-              $('#time').stop().show().delay(8000).fadeOut();
+              $('#time').finish().show().delay(8000).fadeOut();
               last_start = new Date().getTime();
               cur_sesh = res.order;
               playing = true;
@@ -180,7 +180,7 @@
 
         $('#status').html(about+'<p>One moment please.</p>');
         zoom(false);
-        getCurrent('start', start);
+        getCurrent(cur_sesh, start);
       }
     });
     </script>
@@ -190,24 +190,14 @@
     </div>
     <div class='fullscreen' id='aboutfull'>
       <div id='about'>
-      <p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I will run through my program manually, spending five minutes with each person, trying to get to know you better. If we are strangers or just acquaintances, I will imagine what it might be like if we were friends.</p><p>I will do this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I will perform for 10 hours a day nonstop for a week. The performance will be broadcast live on the internet for anyone to watch.</p>
+      <p>I’ve always dreamt of making a computer program that I could run that would instantly make a bunch of IRL friends for me. I love the anticipatory feeling of accepting a new friend request, knowing I’m about to spend time looking through all their posts and photos back to 2004. So while I haven’t come up with a completely automatic friend script yet, this performance is perhaps an attempt at one version of this. I ran through my program manually, spending five minutes with each person, trying to get to know you better. If we were strangers or just acquaintances, I imagined what it might be like if we were friends.</p><p>I did this for each of the 1000+ backers of the Electric Objects $5 Commission. Spending five minutes per person, I performed for 10 hours a day nonstop for a week. The performance was broadcast live on the internet for anyone to watch.</p>
         <img id='aboutclose' src='x.png'/>
       </div>
 
     </div>
     <div id='interface'>
       <img class='button' id='zoom' src='zoomout.png' />
-      <!--<select id='setdate'>
-        <option value='2015-08-20'>8/20</option>
-        <option value='2015-08-21'>8/21</option>
-        <option value='2015-08-22'>8/22</option>
-        <option value='2015-08-23'>8/23</option>
-        <option value='2015-08-24'>8/24</option>
-        <option value='2015-08-25'>8/25</option>
-      </select>
-      <input id='settime' placeholder='10:00'></input>
-      <img class='button' id='restart' src='restart.png' />-->
-      <div id='time'>3:39 8/20/15</div>
+      <div id='time'></div>
       <div id='slider'></div>
       <img class='button' id='question' src='question.png' />
     </div>
